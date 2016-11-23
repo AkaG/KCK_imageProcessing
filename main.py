@@ -13,13 +13,12 @@ def main():
 
     cap = cv2.VideoCapture(2)
 
-    googles = cv2.imread("resources/glasses.png", -1)
+    googles = cv2.imread("resources/glasses.png", cv2.IMREAD_UNCHANGED)
 
     while True:
 
         ret, frame = cap.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        rgba = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
 
         faces = faceCascade.detectMultiScale(
             gray,
