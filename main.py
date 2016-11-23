@@ -52,14 +52,14 @@ def main():
                 cv2.rectangle(roi_color, (sx, sy), (sx+sw, sy+sh), (255, 0, 0), 1)
 
                 eyes = eye_cascade.detectMultiScale(
-                    half_roi_gray
-                    # scaleFactor=1.2
-                    # minNeighbors=20,
-                    # minSize=(55, 55)
+                    half_roi_gray,
+                    scaleFactor=1.02,
+                    minNeighbors=20,
+                    minSize=(45, 45)
                     )
                 for (ex,ey,ew,eh) in eyes:
                     cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
-                    frame = overlayImage(frame, googles, x+ex-30, y+ey-20)
+                    frame = overlayImage(frame, googles, x+ex-30, y+ey-10)
 
         cv2.imshow('Smile Detector', frame)
         c = cv2.waitKey(7)
