@@ -5,24 +5,27 @@ import cv2
 def main():
     facePath = "haarcascades/haarcascade_frontalface_default.xml"
     smilePath = "haarcascades/haarcascade_smile.xml"
+    eyePath = "haarcascades/haarcascade_eye.xml"
 
     faceCascade = cv2.CascadeClassifier(facePath)
     smileCascade = cv2.CascadeClassifier(smilePath)
+    eye_cascade = cv2.CascadeClassifier(eyePath)
 
     cap = cv2.VideoCapture(2)
 
-    sF = 1.05
+    googles = cv2.imread("resources/glasses.png", -1)
 
     while True:
 
         ret, frame = cap.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        rgba = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
 
         faces = faceCascade.detectMultiScale(
             gray,
-            scaleFactor= sF,
+            scaleFactor= 1.05,
             minNeighbors=8,
-            minSize=(55, 55),
+            minSize=(55, 55)
         )
 
         for (x, y, w, h) in faces:
@@ -30,11 +33,20 @@ def main():
             roi_gray = gray[y:y+h, x:x+w]
             roi_color = frame[y:y+h, x:x+w]
 
+            eyes = eye_cascade.detectMultiScale(
+                roi_gray,
+                scaleFactor=1.5,
+                minNeighbors=6,
+                minSize=(55, 55)
+            )
+            for (ex,ey,ew,eh) in eyes:
+                cv2.rectangle(roi_color,(ex,ey),(ex+ew,ey+eh),(0,255,0),2)
+
             smile = smileCascade.detectMultiScale(
                 roi_gray,
                 scaleFactor= 1.7,
                 minNeighbors=22,
-                minSize=(25, 25),
+                minSize=(25, 25)
                 )
 
             for (x, y, w, h) in smile:
