@@ -51,7 +51,12 @@ def main():
             for (x, y, w, h) in smile:
                 cv2.rectangle(roi_color, (x, y), (x+w, y+h), (255, 0, 0), 1)
 
-        cv2.imshow('Smile Detector', frame)
+
+        rgbaFrame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+        for c in range(0,3):
+            rgbaFrame[0:0 + googles.shape[0], 0:0 + googles.shape[1], c] = googles[:, :, c] * (googles[:, :, 3] / 255.0) + rgbaFrame[0:0 + googles.shape[0], 0:0 + googles.shape[1], c] * (1.0 - googles[:, :, 3] / 255.0)
+
+        cv2.imshow('Smile Detector', cv2.cvtColor(rgbaFrame, cv2.COLOR_RGBA2BGR))
         c = cv2.waitKey(7)
         if c == 27:
             break
