@@ -33,6 +33,9 @@ def main():
 
     googles = cv2.imread("resources/glasses.png", cv2.IMREAD_UNCHANGED)
 
+    animation = False
+    animate_y = 0
+
     while True:
 
         ret, frame = cap.read()
@@ -59,6 +62,10 @@ def main():
                 minSize=(25, 25)
                 )
 
+            if len(smile) == 0:
+                animation = False
+                animate_y = 0
+
             for (sx, sy, sw, sh) in smile:
                 cv2.rectangle(roi_color, (sx, sy), (sx+sw, sy+sh), (255, 0, 0), 1)
 
@@ -69,9 +76,19 @@ def main():
                     minSize=(45, 45)
                     )
 
+
                 for (ex, ey, ew, eh) in eyes:
                     cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
-                    frame = overlay_image(frame, googles, x+ex-30, y+ey-10, w, h)
+
+                    if not animation:
+                        frame = overlay_image(frame, googles, x+ex-30, animate_y, w, h)
+                        animate_y += 20
+
+                        if animate_y >= y+ey-10:
+                            animation = True
+
+                    else:
+                        frame = overlay_image(frame, googles, x+ex-30, y+ey-10, w, h)
 
         cv2.imshow('Smile Detector', frame)
         c = cv2.waitKey(7)
