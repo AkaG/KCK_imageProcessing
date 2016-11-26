@@ -76,6 +76,9 @@ def main():
                     minSize=(45, 45)
                     )
 
+                font = cv2.FONT_HERSHEY_SIMPLEX
+                cv2.putText(frame, 'Smile!', (x + int(w / 2) - 50, y), font, 1, (255, 255, 255), 2)
+
 
                 for (ex, ey, ew, eh) in eyes:
                     cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
