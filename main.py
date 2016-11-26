@@ -45,8 +45,7 @@ def main():
             gray,
             scaleFactor=1.05,
             minNeighbors=8,
-            minSize=(55, 55),
-            flags=cv2.cv.CV_HAAR_SCALE_IMAGE
+            minSize=(55, 55)
         )
 
         for (x, y, w, h) in faces:
@@ -57,7 +56,7 @@ def main():
 
             smile = smileCascade.detectMultiScale(
                 roi_gray,
-                scaleFactor=1.7,
+                scaleFactor=1.4 ,
                 minNeighbors=22,
                 minSize=(25, 25)
                 )
