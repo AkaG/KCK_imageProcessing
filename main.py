@@ -62,11 +62,12 @@ def main():
                 minSize=(25, 25)
                 )
 
-            if len(smile) == 0:
+            if len(smile) == 0 and len(faces) == 1:
                 animation = False
                 animate_y = 0
 
-            for (sx, sy, sw, sh) in smile:
+            for index, elem in enumerate(smile):
+                (sx, sy, sw, sh) = elem
                 cv2.rectangle(roi_color, (sx, sy), (sx+sw, sy+sh), (255, 0, 0), 1)
 
                 eyes = eye_cascade.detectMultiScale(
@@ -78,7 +79,6 @@ def main():
 
                 font = cv2.FONT_HERSHEY_SIMPLEX
                 cv2.putText(frame, 'Smile!', (x + int(w / 2) - 50, y), font, 1, (255, 255, 255), 2)
-
 
                 for (ex, ey, ew, eh) in eyes:
                     cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
