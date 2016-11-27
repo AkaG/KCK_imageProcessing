@@ -19,13 +19,13 @@ def overlay_image(img_to_overlay, img_overlying, x_offset, y_offset, face_width,
 
 
 def main():
-    facePath = "haarcascades/haarcascade_frontalface_default.xml"
-    smilePath = "haarcascades/haarcascade_smile.xml"
-    eyePath = "haarcascades/haarcascade_eye.xml"
+    face_path = "haarcascades/haarcascade_frontalface_default.xml"
+    smile_path = "haarcascades/haarcascade_smile.xml"
+    eye_path = "haarcascades/haarcascade_eye.xml"
 
-    faceCascade = cv2.CascadeClassifier(facePath)
-    smileCascade = cv2.CascadeClassifier(smilePath)
-    eye_cascade = cv2.CascadeClassifier(eyePath)
+    face_cascade = cv2.CascadeClassifier(face_path)
+    smile_cascade = cv2.CascadeClassifier(smile_path)
+    eye_cascade = cv2.CascadeClassifier(eye_path)
 
     cap = cv2.VideoCapture(0)
     cap.set(3, 640)
@@ -41,7 +41,7 @@ def main():
         ret, frame = cap.read()
         gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        faces = faceCascade.detectMultiScale(
+        faces = face_cascade.detectMultiScale(
             gray,
             scaleFactor=1.05,
             minNeighbors=8,
@@ -54,18 +54,19 @@ def main():
             half_roi_gray = gray[y:y+h, x:x+int(w/2)]
             roi_color = frame[y:y+h, x:x+w]
 
-            smile = smileCascade.detectMultiScale(
+            smile = smile_cascade.detectMultiScale(
                 roi_gray,
-                scaleFactor=1.4 ,
+                scaleFactor=1.4,
                 minNeighbors=22,
                 minSize=(25, 25)
                 )
 
-            if len(smile) == 0:
+            if len(smile) == 0 and len(faces) == 1:
                 animation = False
                 animate_y = 0
 
-            for (sx, sy, sw, sh) in smile:
+            for index, elem in enumerate(smile):
+                (sx, sy, sw, sh) = elem
                 cv2.rectangle(roi_color, (sx, sy), (sx+sw, sy+sh), (255, 0, 0), 1)
 
                 eyes = eye_cascade.detectMultiScale(
@@ -77,7 +78,6 @@ def main():
 
                 font = cv2.FONT_HERSHEY_SIMPLEX
                 cv2.putText(frame, 'Smile!', (x + int(w / 2) - 50, y), font, 1, (255, 255, 255), 2)
-
 
                 for (ex, ey, ew, eh) in eyes:
                     cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
