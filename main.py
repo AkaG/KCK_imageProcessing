@@ -9,6 +9,8 @@ def overlay_image(img_to_overlay, img_overlying, x_offset, y_offset, face_width,
     resized_image = cv2.resize(img_overlying, (0, 0), fx=scale_x, fy=scale_y)
     rgba_frame = cv2.cvtColor(img_to_overlay, cv2.COLOR_BGR2RGBA)
 
+    x_offset -= (25 * scale_x)
+
     for c in range(0, 3):
         rgba_frame[y_offset:y_offset + resized_image.shape[0], x_offset:x_offset + resized_image.shape[1], c] = \
             resized_image[:, :, c] * (resized_image[:, :, 3] / 255.0) +\
@@ -83,14 +85,14 @@ def main():
                     cv2.rectangle(roi_color, (ex, ey), (ex+ew, ey+eh), (0, 255, 0), 2)
 
                     if not animation:
-                        frame = overlay_image(frame, googles, x+ex-30, animate_y, w, h)
+                        frame = overlay_image(frame, googles, x+ex, animate_y, w, h)
                         animate_y += 20
 
                         if animate_y >= y+ey-10:
                             animation = True
 
                     else:
-                        frame = overlay_image(frame, googles, x+ex-30, y+ey-10, w, h)
+                        frame = overlay_image(frame, googles, x+ex, y+ey-10, w, h)
 
         cv2.imshow('Smile Detector', frame)
         c = cv2.waitKey(7)
