@@ -6,6 +6,9 @@ def overlay_image(img_to_overlay, img_overlying, x_offset, y_offset, face_width,
     scale_x = (face_width / 254.0)
     scale_y = (face_height / 254.0)
 
+    x_offset += int(20 / scale_x) - 10
+    y_offset += int(10 / scale_y) - 5
+
     resized_image = cv2.resize(img_overlying, (0, 0), fx=scale_x, fy=scale_y)
     rgba_frame = cv2.cvtColor(img_to_overlay, cv2.COLOR_BGR2RGBA)
 
@@ -15,8 +18,7 @@ def overlay_image(img_to_overlay, img_overlying, x_offset, y_offset, face_width,
             rgba_frame[y_offset:y_offset + resized_image.shape[0], x_offset:x_offset + resized_image.shape[1], c] * \
             (1.0 - resized_image[:, :, 3] / 255.0)
 
-    return cv2.cvtColor(rgba_frame, cv2.COLOR_RGBA2BGR)
-
+    return cv2.cvtColor(rgba_frame, cv2.COLOR_RGBA2GRAY)
 
 wait_cycles = 10
 
