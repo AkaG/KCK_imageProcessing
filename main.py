@@ -56,57 +56,59 @@ def main():
     animate_y = 0
 
     while True:
+        try:
+            ret, frame = cap.read()
+            gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
-        ret, frame = cap.read()
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-
-        faces = face_cascade.detectMultiScale(
-            gray,
-            scaleFactor=1.05,
-            minNeighbors=8,
-            minSize=(55, 55)
-        )
-
-        if len(faces) == 0:
-            play_music = False
-
-        if play_music and not is_music_playing:
-            mixer.music.play(-1)
-            is_music_playing, wait_cycles = True, 10
-        elif not play_music and stop_playing_music_wait():
-            mixer.music.stop()
-            is_music_playing = False
-
-        for (x, y, w, h) in faces:
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
-            half_roi_gray = gray[y:y + h, x:x + int(w / 2)]
-            roi_color = frame[y:y + h, x:x + w]
-
-            eyes = eye_cascade.detectMultiScale(
-                half_roi_gray,
-                scaleFactor=1.02,
-                minNeighbors=20,
-                minSize=(45, 45)
+            faces = face_cascade.detectMultiScale(
+                gray,
+                scaleFactor=1.05,
+                minNeighbors=8,
+                minSize=(55, 55)
             )
 
-            if len(eyes) == 0 and len(faces) == 1:
-                animation, play_music = False, False
-                animate_y = 0
-            else:
-                play_music = True
+            if len(faces) == 0:
+                play_music = False
 
-            for (ex, ey, ew, eh) in eyes:
-                cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
+            if play_music and not is_music_playing:
+                mixer.music.play(-1)
+                is_music_playing, wait_cycles = True, 10
+            elif not play_music and stop_playing_music_wait():
+                mixer.music.stop()
+                is_music_playing = False
 
-                if not animation:
-                    frame = overlay_image(frame, googles, x + ex - 30, animate_y, w, h)
-                    animate_y += 20
+            for (x, y, w, h) in faces:
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                half_roi_gray = gray[y:y + h, x:x + int(w / 2)]
+                roi_color = frame[y:y + h, x:x + w]
 
-                    if animate_y >= y + ey - 10:
-                        animation = True
+                eyes = eye_cascade.detectMultiScale(
+                    half_roi_gray,
+                    scaleFactor=1.02,
+                    minNeighbors=20,
+                    minSize=(45, 45)
+                )
+
+                if len(eyes) == 0 and len(faces) == 1:
+                    animation, play_music = False, False
+                    animate_y = 0
                 else:
-                    frame = overlay_image(frame, googles, x + ex - 30, y + ey - 10, w, h)
+                    play_music = True
 
+                for (ex, ey, ew, eh) in eyes:
+                    cv2.rectangle(roi_color, (ex, ey), (ex + ew, ey + eh), (0, 255, 0), 2)
+
+                    if not animation:
+                        frame = overlay_image(frame, googles, x + ex - 30, animate_y, w, h)
+                        animate_y += 20
+
+                        if animate_y >= y + ey - 10:
+                            animation = True
+                    else:
+                        frame = overlay_image(frame, googles, x + ex - 30, y + ey - 10, w, h)
+
+        except Exception as e:
+            print(e)
         cv2.imshow('Face Detector', frame)
         c = cv2.waitKey(7)
         if c == 27:
