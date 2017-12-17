@@ -44,7 +44,7 @@ def main():
     cap.set(3, 640)
     cap.set(4, 480)
 
-    googles = cv2.imread("resources/glasses.png", cv2.IMREAD_UNCHANGED)
+    googles = cv2.imread("resources/glasses_with_cigarette.png", cv2.IMREAD_UNCHANGED)
 
     global wait_cycles
 
