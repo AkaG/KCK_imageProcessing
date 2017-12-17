@@ -65,6 +65,9 @@ def main():
             minSize=(55, 55)
         )
 
+        if len(faces) == 0:
+            play_music = False
+
         if play_music and not is_music_playing:
             mixer.music.play(-1)
             is_music_playing, wait_cycles = True, 10
